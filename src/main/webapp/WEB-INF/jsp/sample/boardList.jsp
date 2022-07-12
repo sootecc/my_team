@@ -1,40 +1,36 @@
-<%@ page language="java" contentType="text/html; charset=EUC-KR"
-    pageEncoding="EUC-KR"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
-<meta charset="EUC-KR">
-<title>first</title>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-
+<%@ include file="/WEB-INF/include/include-header.jspf" %>
 </head>
 <body>
-
-	<h2>°Ô½ÃÆÇ ¸ñ·Ï</h2>
-	<table style="border:1px solid #ccc">
+	<h2>ê²Œì‹œíŒ ëª©ë¡</h2>
+	<table class="board_list">
 		<colgroup>
 			<col width="10%"/>
-			<col width="*%"/>
+			<col width="*"/>
 			<col width="15%"/>
 			<col width="20%"/>
 		</colgroup>
-		
 		<thead>
 			<tr>
-				<th scope="col">±Û¹øÈ£</th>
-				<th scope="col">Á¦¸ñ</th>
-				<th scope="col">Á¶È¸¼ö</th>
-				<th scope="col">ÀÛ¼ºÀÏ</th>
+				<th scope="col">ê¸€ë²ˆí˜¸</th>
+				<th scope="col">ì œëª©</th>
+				<th scope="col">ì¡°íšŒìˆ˜</th>
+				<th scope="col">ì‘ì„±ì¼</th>
 			</tr>
 		</thead>
 		<tbody>
 			<c:choose>
-				<c:when test="${fn:length(list)>0}">
+				<c:when test="${fn:length(list) > 0}">
 					<c:forEach items="${list }" var="row">
 						<tr>
 							<td>${row.IDX }</td>
-							<td>${row.TITLE }</td>
+							<td class="title">
+								<a href="#this" name="title">${row.TITLE }</a>
+								<input type="hidden" id="IDX" value="${row.IDX }">
+							</td>
 							<td>${row.HIT_CNT }</td>
 							<td>${row.CREA_DTM }</td>
 						</tr>
@@ -42,11 +38,42 @@
 				</c:when>
 				<c:otherwise>
 					<tr>
-						<td colspan="4">Á¶È¸µÈ °á°ú°¡ ¾ø½À´Ï´Ù.</td>
+						<td colspan="4">ì¡°íšŒëœ ê²°ê³¼ê°€ ì—†ìŠµë‹ˆë‹¤.</td>
 					</tr>
 				</c:otherwise>
 			</c:choose>
 		</tbody>
 	</table>
+	<br/>
+	<a href="#this" class="btn" id="write">ê¸€ì“°ê¸°</a>
+	
+	<%@ include file="/WEB-INF/include/include-body.jspf" %>
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$("#write").on("click", function(e){ //ê¸€ì“°ê¸° ë²„íŠ¼
+				e.preventDefault();
+				fn_openBoardWrite();
+			});	
+			
+			$("a[name='title']").on("click", function(e){ //ì œëª© 
+				e.preventDefault();
+				fn_openBoardDetail($(this));
+			});
+		});
+		
+		
+		function fn_openBoardWrite(){
+			var comSubmit = new ComSubmit();
+			comSubmit.setUrl("<c:url value='/sample/openBoardWrite.do' />");
+			comSubmit.submit();
+		}
+		
+		function fn_openBoardDetail(obj){
+			var comSubmit = new ComSubmit();
+			comSubmit.setUrl("<c:url value='/sample/openBoardDetail.do' />");
+			comSubmit.addParam("IDX", obj.parent().find("#IDX").val());
+			comSubmit.submit();
+		}
+	</script>	
 </body>
 </html>
